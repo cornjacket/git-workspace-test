@@ -47,6 +47,30 @@ git-workspace-test/
   `project/tasks`. **Draft-only:** it writes the file and stops, never commits.
 - `lib.sh` — shared `repos.yml` parser (python3 + PyYAML).
 
+The status subsystem (Python, run via `make`):
+
+- `run.py` — the daily run: summarize → aggregate → advance state.
+  `make run` uses `claude -p`; `make run-dry` skips every LLM call and emits
+  deterministic placeholders.
+- `new-work.py` — what *you* committed per repo since the last run.
+- `aggregate-plans.py` — rebuild `daily-plan-summary.md` from `.workspace/plans/`.
+- `sync.py` — report which repos are readable. Read-only; it never clones.
+- `_status_lib.py` — shared config/membership/git-telemetry helpers.
+
+### The rollup is author-scoped
+
+Every git read filters `--author` against `git_author` in `.workspace/config.yml`,
+so the summary shows **only your own commits**. A repo a teammate advanced reads
+as INACTIVE *for you* while `state.json` still tracks the real HEAD, so tomorrow's
+window stays correct. This is why the run **hard-fails** on an unresolved
+`git_author`: a wrong one produces a plausible-looking but empty rollup rather
+than an error, which is the worst kind of failure.
+
+Deliverables, both written by the run and **never** by `setup`/`update`:
+`summary.md` (retrospective, newest day first) and `daily-plan-summary.md`
+(forward-looking, workspace plan first). Dated snapshots land in
+`.workspace/state/archive/`.
+
 ### The workspace task-system is a triage area
 
 `project/tasks/` tracks work that belongs to **no single child repo** — inter-repo

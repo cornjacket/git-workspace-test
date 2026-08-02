@@ -7,7 +7,8 @@ SCRIPTS := .workspace/scripts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help status bootstrap guard replan new-work run run-dry aggregate
+.PHONY: help status bootstrap guard replan new-work run run-dry aggregate \
+        add-repo delete-repo mute-repo
 
 help: ## show this help
 	@echo "git-workspace-test — workspace commands"
@@ -38,3 +39,15 @@ run: ## full status run: summarize, aggregate, advance state (uses claude -p)
 
 run-dry: ## same, but with no LLM calls — deterministic placeholders
 	@python3 $(SCRIPTS)/run.py --dry-run
+
+# The repo verbs take arguments, and make reads bare words as extra goals — so
+# they are passed through ARGS. The scripts are the real interface; these are a
+# convenience. e.g. make add-repo ARGS="git@github.com:me/x.git --priority 1"
+add-repo: ## register + clone a repo   ARGS="<url> [--name N] [--branch B] [--priority N]"
+	@python3 $(SCRIPTS)/add-repo.py $(ARGS)
+
+delete-repo: ## unregister a repo, refusing a dirty/unpushed checkout   ARGS="<name>"
+	@python3 $(SCRIPTS)/delete-repo.py $(ARGS)
+
+mute-repo: ## quiet a repo in the rollup   ARGS="<name> [--skip|--unmute]"
+	@python3 $(SCRIPTS)/mute-repo.py $(ARGS)
