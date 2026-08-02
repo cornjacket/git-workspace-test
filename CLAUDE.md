@@ -47,6 +47,11 @@ git-workspace-test/
   `project/tasks`. **Draft-only:** it writes the file and stops, never commits.
 - `lib.sh` — shared `repos.yml` parser (python3 + PyYAML).
 
+- `inject-kernel.py --all` — refresh the commit-discipline kernel in every
+  tracked repo's `CLAUDE.md`; `--check` reports drift without writing. It never
+  commits inside a child repo — you `cd` there and commit, so the change lands
+  with your identity and that repo's hooks.
+
 Membership verbs — **never hand-edit `.workspace/repos.yml`**, run these:
 
 - `add-repo.py <url>` — clone it, register it, seed its plan slot. Clones
@@ -79,6 +84,16 @@ The status subsystem (Python, run via `make`):
   pushes it. The side branch exists because the routine's GitHub App identity
   cannot push to the default branch; `.github/workflows/auto-merge-status.yml`
   fast-forwards it onto `main`. It never commits your plans or `repos.yml`.
+
+### The child kernel is shared; the plans are not
+
+Each tracked repo carries a `git-workspace-commits` block in its own `CLAUDE.md`
+holding the commit schema this workspace parses. That block is **committed to the
+shared repo**, so it names no workspace, no developer, and no version — several
+developers may track the same repo from their own workspaces, and anything
+personal in it would make them overwrite each other's block forever. It is
+commit-discipline **only**: plans live per-developer in `.workspace/plans/`, so a
+tracked repo should have no `daily-plan.md` of its own.
 
 ### The rollup is author-scoped
 

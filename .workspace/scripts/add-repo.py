@@ -100,11 +100,29 @@ def main():
         )
         print(f"[add-repo] seeded .workspace/plans/{name}/daily-plan.md")
 
+    # The commit kernel is what makes this repo's git log readable as telemetry,
+    # so it goes in at registration rather than waiting to be remembered.
+    kernel_note = ""
+    if (dest / ".git").exists():
+        import subprocess
+        r = subprocess.run(
+            [sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                          "inject-kernel.py"), name],
+            capture_output=True, text=True)
+        sys.stdout.write(r.stdout)
+        if r.returncode != 0:
+            sys.stderr.write(r.stderr)
+        elif "already current" not in r.stdout:
+            kernel_note = (f"  * Commit the kernel inside the child: cd {path} && "
+                           "git add CLAUDE.md && git commit")
+
     print()
     print("Next:")
     print(f"  * Add '{name}' to the remote routine's `sources` pre-clone list, or the")
     print("    scheduled run cannot read its git log (the sandbox has no checkouts).")
-    print(f"  * Commit the workspace: repos.yml and the new plan slot are tracked.")
+    if kernel_note:
+        print(kernel_note)
+    print("  * Commit the workspace: repos.yml and the new plan slot are tracked.")
     return 0
 
 

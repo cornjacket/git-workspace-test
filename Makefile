@@ -8,7 +8,7 @@ SCRIPTS := .workspace/scripts
 .DEFAULT_GOAL := help
 
 .PHONY: help status bootstrap guard replan new-work run run-dry aggregate pull \
-        add-repo delete-repo mute-repo
+        add-repo delete-repo mute-repo inject-kernel kernel-check
 
 help: ## show this help
 	@echo "git-workspace-test — workspace commands"
@@ -54,3 +54,9 @@ delete-repo: ## unregister a repo, refusing a dirty/unpushed checkout   ARGS="<n
 
 mute-repo: ## quiet a repo in the rollup   ARGS="<name> [--skip|--unmute]"
 	@python3 $(SCRIPTS)/mute-repo.py $(ARGS)
+
+inject-kernel: ## refresh the commit-discipline kernel in every tracked repo
+	@python3 $(SCRIPTS)/inject-kernel.py --all
+
+kernel-check: ## report which tracked repos have a missing/stale kernel
+	@python3 $(SCRIPTS)/inject-kernel.py --check
