@@ -23,7 +23,17 @@
 !/project/
 !/.claude/
 
+# 2c. The workflows that land the remote routine's output on main.
+!/.github/
+
 # 3. The status routine's deliverables. RUNTIME: written by the daily run, not by
 #    setup/update — but they must be committable, or the routine cannot land them.
 !/summary.md
 !/daily-plan-summary.md
+
+# 4. Re-ignore build noise INSIDE the un-ignored directories. Last match wins,
+#    so this must come after the `!` lines above. Running the status scripts
+#    creates .workspace/scripts/__pycache__/, which would otherwise be tracked
+#    like everything else under .workspace/.
+__pycache__/
+*.pyc
