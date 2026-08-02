@@ -7,7 +7,7 @@ SCRIPTS := .workspace/scripts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help status bootstrap guard
+.PHONY: help status bootstrap guard replan
 
 help: ## show this help
 	@echo "git-workspace-test — workspace commands"
@@ -23,3 +23,6 @@ bootstrap: ## clone/attach every repo listed in .workspace/repos.yml
 
 guard: ## fail if a child repo was staged into the wrapper index
 	@$(SCRIPTS)/guard.sh
+
+replan: ## redraft the workspace daily plan from project/tasks (draft only)
+	@$(SCRIPTS)/replan.sh

@@ -24,9 +24,12 @@ git-workspace-test/
 ├── README.md            what this workspace is + the daily dashboard links
 ├── Makefile             visible command surface: make status | bootstrap | guard
 ├── .gitignore           allowlist: tracks .workspace/ + the top-level files
+├── project/             the workspace's OWN task-system (triage — see below)
 ├── .workspace/          the wrapper's control plane (hidden)
 │   ├── config.yml       identity: name · git_author · generator_version
 │   ├── repos.yml        membership registry — what repos/worktrees live here
+│   ├── plans/           daily plans (per-developer, not shared)
+│   │   └── _workspace/  the workspace's own forward-looking plan
 │   └── scripts/         the wrapper's verbs (see below)
 └── <child repos>/       managed checkouts — ignored by git
 ```
@@ -35,10 +38,35 @@ git-workspace-test/
 
 - `bootstrap.sh` — reconstitute the workspace from `.workspace/repos.yml`: clone
   every `standard` repo, then `git worktree add` every `worktree`. Idempotent.
+  `repos.yml` is a *lockfile*, not a config file you author — the repo verbs
+  write it, `bootstrap.sh` replays it onto a fresh machine.
 - `status.sh` — branch + clean/dirty for every managed checkout.
 - `guard.sh` — fails if a child repo, a `.git` dir, or a worktree `.git` pointer
   was staged into the wrapper index. Wire it in as a pre-commit hook.
+- `replan.sh` — redraft `.workspace/plans/_workspace/daily-plan.md` from
+  `project/tasks`. **Draft-only:** it writes the file and stops, never commits.
 - `lib.sh` — shared `repos.yml` parser (python3 + PyYAML).
+
+### The workspace task-system is a triage area
+
+`project/tasks/` tracks work that belongs to **no single child repo** — inter-repo
+chores, infrastructure, and ideas that do not have a repo home yet. Work flows
+*downward* from here:
+
+- An idea lands as a workspace task **before** it has a repo.
+- A workspace task **graduates** when it earns one: add a subtask "create repo X",
+  run the repo verb, then migrate the remaining work into that child repo's own
+  task-system. (Cross-boundary moves are manual today — recreate in the child,
+  close in the workspace.)
+- Anything that clearly belongs to an existing child repo belongs in **that repo's**
+  task-system, not here. This one is for the homeless work.
+
+`.workspace/plans/_workspace/daily-plan.md` is that task state rendered as a plan.
+It is **forward-looking only** — the workspace's own commits are meta-noise, so it
+carries no retrospective git summary, unlike a child repo's plan. Plans live in
+the workspace (not in the child repos) because they are *per-developer* intent:
+each developer's own workspace holds their own plans, so two developers never
+collide over one shared plan file.
 
 ### Rules for any agent working here
 
