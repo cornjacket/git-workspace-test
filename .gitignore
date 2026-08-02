@@ -17,3 +17,8 @@
 !/.gitignore
 !/README.md
 !/Makefile
+
+# 3. The status routine's deliverables. RUNTIME: written by the daily run, not by
+#    setup/update — but they must be committable, or the routine cannot land them.
+!/summary.md
+!/daily-plan-summary.md
