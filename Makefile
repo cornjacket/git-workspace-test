@@ -7,7 +7,7 @@ SCRIPTS := .workspace/scripts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help status bootstrap guard replan new-work run run-dry aggregate \
+.PHONY: help status bootstrap guard replan new-work run run-dry aggregate pull \
         add-repo delete-repo mute-repo
 
 help: ## show this help
@@ -27,6 +27,9 @@ guard: ## fail if a child repo was staged into the wrapper index
 
 replan: ## redraft the workspace daily plan from project/tasks (draft only)
 	@$(SCRIPTS)/replan.sh
+
+pull: ## bring the routine's aggregates down (ff-only; declines if diverged)
+	@$(SCRIPTS)/pull.sh
 
 new-work: ## show your new commits per repo since the last status run
 	@python3 $(SCRIPTS)/new-work.py

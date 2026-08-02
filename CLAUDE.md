@@ -69,6 +69,10 @@ The status subsystem (Python, run via `make`):
 - `aggregate-plans.py` — rebuild `daily-plan-summary.md` from `.workspace/plans/`.
 - `sync.py` — report which repos are readable. Read-only; it never clones.
 - `_status_lib.py` — shared config/membership/git-telemetry helpers.
+- `pull.sh` — the morning trigger: fast-forward this workspace onto whatever the
+  routine landed. **`--ff-only`** — it advances or it declines and notifies; it
+  never merges, rebases, or forces. Exit 1 means you are ahead or diverged, and
+  it names the fix. `--bootstrap` also clones repos registered elsewhere.
 - `daily.sh` — the scheduled REMOTE routine's entry point. Runs the pipeline,
   then commits **only** `summary.md`, `daily-plan-summary.md`, and
   `.workspace/state/` onto a dated side branch `auto/status-YYYY-MM-DD` and
