@@ -1,0 +1,50 @@
+# repos.yml — this workspace's membership registry
+#
+# CONTENT: seeded once by create-git-workspace, then it is yours. `update.sh`
+# never touches it.
+#
+# The single source of truth for *what repos physically live in this workspace*.
+# `.workspace/scripts/bootstrap.sh` reconstitutes the whole workspace from this
+# file; it is also the roster `status.sh` and `guard.sh` iterate over.
+#
+# Each entry is one managed checkout. Two kinds:
+#
+#   type: standard   a normal clone            → git clone <url> <path>
+#   type: worktree   a linked worktree of an   → git worktree add <path> <branch>
+#                    already-present repo         (run from parent_repo_path)
+#
+# NOTE ON WORKTREES: a worktree's `.git` is a *file* (a gitdir pointer), not a
+# directory. Tooling must test `[ -e <path>/.git ]`, never `[ -d <path>/.git ]`.
+#
+# Fields
+# ------
+#   name              unique short identifier
+#   url               remote URL          (standard: required; worktree: omit)
+#   path              location relative to the workspace root
+#   type              standard | worktree
+#   branch            branch to checkout (standard) / attach the worktree to
+#   parent_repo_path  worktree ONLY — path of the repo the worktree hangs off
+#   tags              freeform labels for filtering (e.g. app, generator)
+#
+# Example — delete the comment markers and edit, or add entries by hand:
+#
+#   repos:
+#     # ---- standard clones ----
+#     - name: my-app
+#       url: git@github.com:me/my-app.git
+#       path: my-app
+#       type: standard
+#       branch: main
+#       tags: [app]
+#
+#     # ---- worktrees ----
+#     # `my-lib` is checked out as a container; `main` and `feature-x` are
+#     # linked worktrees hanging off it.
+#     - name: my-lib-main
+#       path: my-lib/main
+#       type: worktree
+#       branch: main
+#       parent_repo_path: my-lib
+#       tags: [lib, worktree]
+
+repos: []

@@ -1,0 +1,19 @@
+# Meta-State Workspace Wrapper — ALLOWLIST .gitignore
+#
+# This repo *wraps* many child repos and worktrees. Their contents must never
+# be tracked by the wrapper. So: ignore everything at the root by default, then
+# explicitly un-ignore only the wrapper's own files.
+#
+# Add a new tracked wrapper file? Add a matching `!` line below.
+
+# 1. Ignore everything at the workspace root (every child repo / worktree / scratch).
+/*
+
+# 2. Un-ignore only the wrapper's own files. The machinery lives in the hidden
+#    control plane .workspace/ (scripts + repos.yml); only CLAUDE.md and
+#    README.md sit at the top level.
+!/.workspace/
+!/CLAUDE.md
+!/.gitignore
+!/README.md
+!/Makefile

@@ -1,0 +1,18 @@
+# config.yml — this workspace's identity.
+#
+# CONTENT: seeded once by `setup.sh`, then it is yours. `update.sh` never
+# overwrites it — it is where the generator RECOVERS the workspace name (so a
+# directory rename does not break regeneration).
+#
+#   name              the workspace name; substituted into CLAUDE.md
+#   git_author        one or more emails; filters `git log --author` so the
+#                     summary is scoped to YOU. The status run hard-fails on an
+#                     unresolved placeholder — the remote routine has no ambient
+#                     git identity to fall back on.
+#   generator_version the create-git-workspace version that stamped this
+#                     workspace (canonical; CLAUDE.md carries a derived echo).
+
+name: git-workspace-test
+git_author:
+  - taylor.david.ray@gmail.com
+generator_version: 0.1.0
