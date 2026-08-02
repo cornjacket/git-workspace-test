@@ -1,3 +1,1 @@
-# summary — git-workspace-test
-
-Author-scoped rollup would go here.
+# summary — round-trip 70814
